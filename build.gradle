@@ -1,0 +1,35 @@
+buildscript {
+    dependencies {
+        // For nebula-ospackage-daemon
+        classpath "com.netflix.nebula:nebula-ospackage-plugin:3.+"
+    }
+}
+
+apply plugin: 'netflix.nebula'
+apply plugin: 'netflix.ospackage'
+apply plugin: 'nebula-ospackage-daemon'
+
+nebula {
+    moduleEmail = 'dli@netflix.com'
+    moduleOwner = 'dli@netflix.com'
+}
+
+task goBuild(type: Exec) {
+  commandLine "go", "build", "-o", "root/apps/go_audit/bin/go_audit", "audit.go"
+}
+
+def appName = 'go_audit'
+
+ospackage {
+    summary = 'Runs go_audit'
+
+    packageName = appName + '-' + project.scminfo.branch
+
+    requires('prana-release')
+
+    //postInstall('/usr/sbin/update-rc.d go-audit defaults 98')
+}
+
+buildDeb.dependsOn("goBuild")
+
+[buildRpm, buildRpmPublish]*.enabled = false
