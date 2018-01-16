@@ -15,7 +15,7 @@ nebula {
 }
 
 task goBuild(type: Exec) {
-  commandLine "go", "build", "-o", "root/apps/go_audit/bin/go_audit", "audit.go"
+  commandLine "newt" "exec" "--tool" "go=1.8" "go", "build", "-o", "root/apps/go_audit/bin/go_audit", "audit.go"
 }
 
 def appName = 'go_audit'
